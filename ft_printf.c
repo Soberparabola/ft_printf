@@ -5,58 +5,87 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jordgarc <jordgarc@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/02 19:41:44 by jordgarc          #+#    #+#             */
-/*   Updated: 2024/02/02 19:42:07 by jordgarc         ###   ########.fr       */
+/*   Created: 2024/02/12 18:37:40 by jordgarc          #+#    #+#             */
+/*   Updated: 2024/02/12 18:37:50 by jordgarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	check_type(const char *input, void *arg)
-{
-	int	i;
+static	int	type_var(char c, va_list element);
 
-	i = 0;
-	if (*input == 'c')
-		i += print_char((int)arg);
-	else if (*input == 's')
-		i += print_string((char *)arg);
-	else if (*input == 'p')
-		i += print_pointer((unsigned long)arg, 87);
-	else if (*input == 'd')
-		i += print_int((int)arg);
-	else if (*input == 'i')
-		i += print_int((int)arg);
-	else if (*input == 'u')
-		i += print_unsigned((unsigned int)arg);
-	else if (*input == 'x')
-		i += print_hex((unsigned int)arg, 87);
-	else if (*input == 'X')
-		i += print_hex((unsigned int)arg, 55);
-	return (i);
+static int	w_str_percent(char c, va_list element)
+{
+	int	let;
+
+	let = 0;
+	if (c != '%')
+	{
+		let = type_var(c, element);
+		if (let == -1)
+			return (-1);
+		return (let);
+	}
+	else
+	{
+		if (write (1, &c, 1) != 1)
+			return (-1);
+		return (1);
+	}
 }
 
-int	ft_printf(const char *input, ...)
+static	int	w_str(const char *str, va_list element, int let)
 {
-	va_list			args;
-	unsigned int	i;
+	int		i;
 
 	i = 0;
-	va_start(args, input);
-	while (*input != '\0')
+	while (str[i])
 	{
-		if (*input == '%')
+		if (str[i] == '%')
 		{
-			input++;
-			if (ft_strchr("cspdiuxX", *input))
-				i += check_type(input, va_arg(args, void *));
-			else if (*input == '%')
-				i += print_char('%');
+			let = let + w_str_percent(str[i + 1], element);
+			if (let == -1)
+				return (-1);
+			i++;
 		}
 		else
-			i = i + print_char(*input);
-		input++;
+		{
+			if (write (1, &str[i], 1) != 1)
+				return (-1);
+			let++;
+		}
+		i++;
 	}
-	va_end(args);
-	return (i);
+	return (let);
+}
+
+int	ft_printf(const char *str, ...)
+{
+	va_list	element;
+	int		let;
+
+	let = 0;
+	va_start(element, str);
+	let = w_str(str, element, let);
+	va_end(element);
+	return (let);
+}
+
+static int	type_var(char c, va_list element)
+{
+	if (c == 'c')
+		return (ft_putchar(va_arg(element, int)));
+	if (c == 's')
+		return (ft_putstr(va_arg(element, char *)));
+	if (c == 'p')
+		return (ft_punt_hexa(va_arg(element, void *)));
+	if (c == 'd' || c == 'i')
+		return (ft_putnbr(va_arg(element, int)));
+	if (c == 'u')
+		return (ft_num_nosign(va_arg(element, unsigned int)));
+	if (c == 'x')
+		return (ft_hexa_min(va_arg(element, int)));
+	if (c == 'X')
+		return (ft_hexa_mayus(va_arg(element, int)));
+	return (0);
 }
