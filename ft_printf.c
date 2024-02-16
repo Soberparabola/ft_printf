@@ -6,22 +6,23 @@
 /*   By: jordgarc <jordgarc@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 18:37:40 by jordgarc          #+#    #+#             */
-/*   Updated: 2024/02/12 18:37:50 by jordgarc         ###   ########.fr       */
+/*   Updated: 2024/02/16 18:29:39 by jordgarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static	int	type_var(char c, va_list element);
+static int	val_type(char c, va_list element);
 
-static int	w_str_percent(char c, va_list element)
+//Coge el valor despues del %, si es solo el % lo imprime por salida
+static int	char_percent(char c, va_list element)
 {
 	int	let;
 
 	let = 0;
 	if (c != '%')
 	{
-		let = type_var(c, element);
+		let = val_type(c, element);
 		if (let == -1)
 			return (-1);
 		return (let);
@@ -34,7 +35,8 @@ static int	w_str_percent(char c, va_list element)
 	}
 }
 
-static	int	w_str(const char *str, va_list element, int let)
+//Comprueba si hay un %, si no lo hay, imprime los caracteres en la salida
+static	int	char_admin(const char *str, va_list element, int let)
 {
 	int		i;
 
@@ -43,7 +45,7 @@ static	int	w_str(const char *str, va_list element, int let)
 	{
 		if (str[i] == '%')
 		{
-			let = let + w_str_percent(str[i + 1], element);
+			let = let + char_percent(str[i + 1], element);
 			if (let == -1)
 				return (-1);
 			i++;
@@ -66,12 +68,12 @@ int	ft_printf(const char *str, ...)
 
 	let = 0;
 	va_start(element, str);
-	let = w_str(str, element, let);
+	let = char_admin(str, element, let);
 	va_end(element);
 	return (let);
 }
 
-static int	type_var(char c, va_list element)
+static int	val_type(char c, va_list element)
 {
 	if (c == 'c')
 		return (ft_putchar(va_arg(element, int)));
