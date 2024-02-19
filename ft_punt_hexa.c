@@ -6,7 +6,7 @@
 /*   By: jordgarc <jordgarc@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 18:38:11 by jordgarc          #+#    #+#             */
-/*   Updated: 2024/02/12 18:38:14 by jordgarc         ###   ########.fr       */
+/*   Updated: 2024/02/19 18:58:15 by jordgarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,15 @@ static int	hexa_pointer(char *bstr, unsigned long long n, int c)
 int	ft_punt_hexa(void *p)
 {
 	unsigned long long	pointer;
-	int					let;
+	int					temp;
 
-	let = 0;
+	temp = 0;
 	pointer = (unsigned long long)p;
 	if (write(1, "0x", 2) != 2)
 		return (-1);
-	let = hexa_pointer("0123456789abcdef", pointer, let);
-	if (let == -1)
+	temp = hexa_pointer("0123456789abcdef", pointer, temp);
+	if (temp == -1)
 		return (-1);
-	let += 2;
-	return (let);
+	temp += 2;
+	return (temp);
 }

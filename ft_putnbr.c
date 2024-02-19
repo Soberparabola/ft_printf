@@ -6,7 +6,7 @@
 /*   By: jordgarc <jordgarc@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 18:38:48 by jordgarc          #+#    #+#             */
-/*   Updated: 2024/02/12 18:38:50 by jordgarc         ###   ########.fr       */
+/*   Updated: 2024/02/19 19:07:31 by jordgarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ static int	int_min(int n)
 
 int	ft_putnbr(int n)
 {
-	int	let;
+	int	temp;
 
-	let = 0;
+	temp = 0;
 	if (n == -2147483648)
 		return (int_min(n));
-	if (n < 0 && ++let)
+	if (n < 0 && ++temp)
 	{
 		if (write(1, "-", 1) != 1)
 			return (-1);
@@ -35,8 +35,8 @@ int	ft_putnbr(int n)
 	}
 	if (n > 9)
 	{
-		let += ft_putnbr(n / 10);
-		if (let == -1)
+		temp += ft_putnbr(n / 10);
+		if (temp == -1)
 			return (-1);
 		n = n % 10;
 	}
@@ -44,7 +44,7 @@ int	ft_putnbr(int n)
 	{
 		if (ft_putchar (('0' + n)) == -1)
 			return (-1);
-		let++;
+		temp++;
 	}
-	return (let);
+	return (temp);
 }

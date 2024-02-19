@@ -6,7 +6,7 @@
 /*   By: jordgarc <jordgarc@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 18:37:40 by jordgarc          #+#    #+#             */
-/*   Updated: 2024/02/16 18:29:39 by jordgarc         ###   ########.fr       */
+/*   Updated: 2024/02/19 19:21:56 by jordgarc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,15 @@ static int	val_type(char c, va_list element);
 //Coge el valor despues del %, si es solo el % lo imprime por salida
 static int	char_percent(char c, va_list element)
 {
-	int	let;
+	int	temp;
 
-	let = 0;
+	temp = 0;
 	if (c != '%')
 	{
-		let = val_type(c, element);
-		if (let == -1)
+		temp = val_type(c, element);
+		if (temp == -1)
 			return (-1);
-		return (let);
+		return (temp);
 	}
 	else
 	{
@@ -36,7 +36,7 @@ static int	char_percent(char c, va_list element)
 }
 
 //Comprueba si hay un %, si no lo hay, imprime los caracteres en la salida
-static	int	char_admin(const char *str, va_list element, int let)
+static	int	char_admin(const char *str, va_list element, int temp)
 {
 	int		i;
 
@@ -45,8 +45,8 @@ static	int	char_admin(const char *str, va_list element, int let)
 	{
 		if (str[i] == '%')
 		{
-			let = let + char_percent(str[i + 1], element);
-			if (let == -1)
+			temp = temp + char_percent(str[i + 1], element);
+			if (temp == -1)
 				return (-1);
 			i++;
 		}
@@ -54,23 +54,23 @@ static	int	char_admin(const char *str, va_list element, int let)
 		{
 			if (write (1, &str[i], 1) != 1)
 				return (-1);
-			let++;
+			temp++;
 		}
 		i++;
 	}
-	return (let);
+	return (temp);
 }
 
 int	ft_printf(const char *str, ...)
 {
 	va_list	element;
-	int		let;
+	int		temp;
 
-	let = 0;
+	temp = 0;
 	va_start(element, str);
-	let = char_admin(str, element, let);
+	temp = char_admin(str, element, temp);
 	va_end(element);
-	return (let);
+	return (temp);
 }
 
 static int	val_type(char c, va_list element)
